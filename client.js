@@ -8,8 +8,8 @@ const net = require('net');
 
 const connect = function() {
   const conn = net.createConnection({ 
-    host: 'localhost',
-    port: 50541
+    host: '135.23.222.131',
+    port: 50542
   });
   // interpret incoming data as text
   conn.setEncoding('utf8'); 
@@ -20,9 +20,9 @@ const connect = function() {
   });
 
   conn.on('connect', ()=> { //begin sending movement data
-    setInterval(()=>{
-      conn.write('Move: up'); //could also be 'Move: down', 'Move: left', 'Move: right' 
-    },200);
+    // setInterval(()=>{
+    //   conn.write('Move: up'); //could also be 'Move: down', 'Move: left', 'Move: right' 
+    // },200);
   })
 
   conn.on('data', (data) => {
