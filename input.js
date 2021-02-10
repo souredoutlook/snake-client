@@ -1,10 +1,11 @@
 //input.js
 
-const {MOVEMENT,MESSAGE} = require('./constants')
-let connection;
+const {MOVEMENT,MESSAGE} = require('./constants');
 
+let connection;
+let intervalID;
 /**
- * Setup User Interface 
+ * Setup User Interface
  * Specifically, so that we can handle user input via stdin
  */
 const setupInput = function(conn) {
@@ -17,49 +18,19 @@ const setupInput = function(conn) {
   stdin.on('data', handleUserInput);
   
   return stdin;
-}
+};
 
-// on any input from stdin (standard input), check to see if it is CTRL+C and then exit if it is
+/**
+ * Handle User Input
+ * Passed as a callback to the standard input data event handler - if key press is not CTRL+C - write either a movement message key to connection.
+ */
 const handleUserInput = function(key) {
-  
-  key !== '\u0003' ? connection.write(MOVEMENT[key] || MESSAGE[key]) : process.exit();
-
-  // switch (key) {
-  //   case 'w':
-  //     console.log('Move: up');
-  //     setInterval(()=>{
-  //       connection.write('Move: up');
-  //     },50);
-  //     break;
-  //   case 'a':
-  //     console.log('Move: left');
-  //     setInterval(()=>{
-  //       connection.write('Move: left');
-  //     },50);
-  //     break;
-  //   case 's':
-  //     console.log('Move: down');
-  //     setInterval(()=>{
-  //       connection.write('Move: down');
-  //     },50);
-  //     break;
-  //   case 'd':
-  //     console.log('Move: right');
-  //     setInterval(()=>{
-  //       connection.write('Move: right');
-  //     },50);
-  //     break;
-  //   case '1':
-  //     console.log("Say: yeet!");
-  //     connection.write("Say: yeet!");
-  //     break;
-  //   case '2':
-  //     console.log("Say: g'day!");
-  //     connection.write("Say: g'day!");
-  //     break;  
-  //   case '\u0003':
-  //     process.exit();
-  //   }
-}
+  if (MESSAGE[key]) {
+    connection.write(MESSAGE[key]);
+  } else {
+    clearInterval(intervalID);
+    key !== '\u0003' ?  intervalID = setInterval(()=>connection.write(MOVEMENT[key]), 100) : process.exit();
+  }
+};
 
 module.exports = {setupInput};
